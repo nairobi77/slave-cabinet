@@ -1,0 +1,10 @@
+.example-card {
+  max-width: 600px;
+  margin: 0 auto;
+  flex-wrap: inherit;
+}
+.input-style {
+  width: 100%;
+}
+
+
