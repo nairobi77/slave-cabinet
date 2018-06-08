@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {HttpClientService} from './http-client.service';
 
 
@@ -11,6 +11,7 @@ import {HttpClientService} from './http-client.service';
 })
 export class AppComponent implements OnInit {
   imageSrc: any;
+  private backCloudApi = 'https://slave-cabinet-api.cfapps.io';
 
   registrationDataForm: FormGroup;
 
@@ -22,8 +23,8 @@ export class AppComponent implements OnInit {
     private httpClientService: HttpClientService
   ) {
     this.registrationDataForm = fb.group({
-      addressCtrl: fb.control('', [Validators.required]),
-      dateCtrl: fb.control('', [Validators.required, Validators.minLength(10)]),
+        addressCtrl: fb.control('', [Validators.required]),
+        dateCtrl: fb.control('', [Validators.required]),
       }
     );
   }
@@ -49,7 +50,7 @@ export class AppComponent implements OnInit {
 
   getImageFromService() {
     this.httpClientService.getNewImage().subscribe(data => {
-      this.imageSrc = 'http://slave-cabinet-api.cfapps.io/images/' + data.link;
+      this.imageSrc = this.backCloudApi + '/images/' + data.link;
       this.imageName = data.link;
     });
   }
@@ -61,4 +62,19 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.getImageFromService();
   }
+
+  private dadataNotChoosen(): boolean {
+    return this.filteredAddresses.length !== 1;
+  }
+
+  private dadataChoosenValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } => {
+      if (!(control.dirty || control.touched)) {
+        return null;
+      } else {
+        return this.dadataNotChoosen() ? null : {phoneNumber: true};
+      }
+    };
+  }
+
 }

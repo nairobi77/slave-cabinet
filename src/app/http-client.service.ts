@@ -8,8 +8,8 @@ import {FormGroup} from '@angular/forms';
 export class HttpClientService {
   private authToken = 'Token 6cb3e77f96456594b423c6e2b7781ad43aef6b7e';
   private dadataAddressServiceUrl = 'https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address';
-  private fileApiUrl = 'http://slave-cabinet-api.cfapps.io/nextfile';
-  private sendResultUrl = 'http://slave-cabinet-api.cfapps.io/result';
+  private fileApiUrl = 'https://slave-cabinet-api.cfapps.io/nextfile';
+  private sendResultUrl = 'https://slave-cabinet-api.cfapps.io/result/';
   private dadataHttpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
