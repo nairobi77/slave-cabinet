@@ -1,33 +1,21 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-
-import { AppComponent } from './app.component';
-import {
-  DateAdapter,
-  MatAutocompleteModule,
-  MatButtonModule,
-  MatCardModule,
-  MatDatepickerModule,
-  MatFormFieldModule,
-  MatInputModule, MatNativeDateModule
-} from '@angular/material';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {AppComponent} from './app.component';
+import {MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {HttpClientService} from './http-client.service';
-import {TextMaskModule} from 'angular2-text-mask';
-import { MaskDateDirective } from './mask-date.directive';
 import {InputMaskModule} from 'primeng/inputmask';
+import {AutoCompleteModule} from 'primeng/autocomplete';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    MaskDateDirective
+    AppComponent
   ],
   imports: [
-    BrowserModule, MatCardModule, BrowserAnimationsModule, MatButtonModule,
-    MatAutocompleteModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule,
-    HttpClientModule, MatDatepickerModule, MatNativeDateModule, TextMaskModule, InputMaskModule
+    BrowserModule, MatCardModule, BrowserAnimationsModule, MatButtonModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule,
+    HttpClientModule, InputMaskModule, AutoCompleteModule
   ],
   providers: [HttpClientService],
   bootstrap: [AppComponent]

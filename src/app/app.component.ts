@@ -1,9 +1,6 @@
-import {Component, NgModule} from '@angular/core';
-import {FormGroup, FormBuilder, FormControl, Validators} from '@angular/forms';
-import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import {Component, OnInit} from '@angular/core';
+import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {HttpClientService} from './http-client.service';
-import {DateAdapter, MAT_DATE_LOCALE} from '@angular/material';
-
 
 
 @Component({
@@ -12,51 +9,56 @@ import {DateAdapter, MAT_DATE_LOCALE} from '@angular/material';
   styleUrls: ['./app.component.css'],
 
 })
-@NgModule({
-  providers: [
-    {provide: MAT_DATE_LOCALE, useValue: 'ru-RU'},
-  ],
-})
-export class AppComponent {
+export class AppComponent implements OnInit {
+  imageSrc: any;
 
   registrationDataForm: FormGroup;
-  addressCtrl: FormControl;
-  dateCtrl: FormControl;
-  filteredAddresses: Suggestion[];
+
+  filteredAddresses: string[];
+  private imageName: string;
 
   constructor(
-    private dateAdapter: DateAdapter<Date>,
     private fb: FormBuilder,
     private httpClientService: HttpClientService
   ) {
-    this.dateAdapter.setLocale('ru-RU');
-    this.addressCtrl = fb.control('', [Validators.required]);
-    this.dateCtrl = fb.control('', [Validators.required,  Validators.max(12)]);
     this.registrationDataForm = fb.group({
-        // dateCtrl: [null, [ Validators.required, Validators.max(10)]]
+      addressCtrl: fb.control('', [Validators.required]),
+      dateCtrl: fb.control('', [Validators.required, Validators.minLength(10)]),
       }
     );
-    this.registrationDataForm.addControl('addressCtrl', this.addressCtrl);
-    this.registrationDataForm.addControl('dateCtrl', this.dateCtrl);
-    this.addressCtrl.valueChanges.pipe(
-      debounceTime(400),
-      distinctUntilChanged()
-    ).subscribe(val => this.getAddressSuggestions(val));
   }
 
-  getAddressSuggestions(val: string) {
-    this.httpClientService.getAddressSuggestions(val).subscribe(data => {
-      console.log(data);
-      this.filteredAddresses = data.suggestions;
+  search(event) {
+    this.httpClientService.getAddressSuggestions(event.query).subscribe(data => {
+      this.filteredAddresses = data.suggestions.map(suggestion => suggestion.value);
     });
   }
 
   register() {
-    this.httpClientService.saveData(this.registrationDataForm);
+    this.saveData(this.registrationDataForm);
+    this.getImageFromService();
+    setTimeout(() => {
+        this.registrationDataForm.reset();
+      },
+      100);
   }
 
   isInvalid(): boolean {
     return !this.registrationDataForm.touched || !this.registrationDataForm.valid;
   }
 
+  getImageFromService() {
+    this.httpClientService.getNewImage().subscribe(data => {
+      this.imageSrc = 'http://slave-cabinet-api.cfapps.io/images/' + data.link;
+      this.imageName = data.link;
+    });
+  }
+
+  saveData(formGroup: FormGroup) {
+    this.httpClientService.saveData(formGroup, this.imageName);
+  }
+
+  ngOnInit(): void {
+    this.getImageFromService();
+  }
 }
