@@ -1,10 +1,6 @@
 <!--The content below is only a placeholder and can be replaced.-->
 
 <mat-card class="example-card">
-  <mat-card-header>
-    <mat-card-title>My slave, welcome to your cabinet!</mat-card-title>
-    <mat-card-subtitle>To start your work, press "Accept new work" button</mat-card-subtitle>
-  </mat-card-header>
 
   <mat-card-content>
 
@@ -12,27 +8,34 @@
       <p>
         <img class="image" [src]="imageSrc"/>
       </p>
-      <p>
+      <mat-card-subtitle>Используя выпадающие подсказки, заполните адрес регистрации с максимальной глубиной, должен остаться один вариант - его надо выбрать</mat-card-subtitle>
+      <div>
         <p-autoComplete
+
           [autoHighlight]="true"
           [style]="{'width':'100%'}"
           [inputStyle]="{'width':'100%'}"
           placeholder="Адрес регистрации"
-          [delay]="300"
-          formControlName="addressCtrl"
+          [delay]="200"
+          formControlName="address"
           [suggestions]="filteredAddresses"
           (completeMethod)="search($event)"></p-autoComplete>
-      </p>
+      <div *ngIf="addressCtrl.dirty && addressCtrl.hasError('notComplete')">Должен остаться только один</div>
+      </div>
 
-      <p>
+<p></p>
+
+      <mat-card-subtitle>Введите дату регистрации в формате ДД.ММ.ГГГГ</mat-card-subtitle>
+      <div>
         <p-inputMask
           [required]="true"
-          formControlName="dateCtrl"
+          formControlName="date"
           mask="99.99.9999"
-          placeholder="Дата регистрации"></p-inputMask>
-      </p>
-
-
+          placeholder="dd.mm.yyyy"></p-inputMask>
+        <div *ngIf="dateCtrl.dirty && dateCtrl.hasError('notComplete')">Дата должна быть заполнена полностью</div>
+      </div>
+<p></p>
+      <mat-card-subtitle>После заполнения нажмите ENTER или кнопку ниже</mat-card-subtitle>
       <mat-card-actions>
         <button mat-button type="submit" [disabled]="isInvalid()">DONE/NEXT</button>
       </mat-card-actions>

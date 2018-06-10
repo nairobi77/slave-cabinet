@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {HttpClientService} from './http-client.service';
 
 
@@ -14,17 +14,21 @@ export class AppComponent implements OnInit {
   private backCloudApi = 'https://slave-cabinet-api.cfapps.io';
 
   registrationDataForm: FormGroup;
+  addressCtrl: FormControl;
+  dateCtrl: FormControl;
 
-  filteredAddresses: string[];
+  filteredAddresses = [''];
   private imageName: string;
 
   constructor(
     private fb: FormBuilder,
     private httpClientService: HttpClientService
   ) {
+    this.addressCtrl = fb.control('', [Validators.required, this.dadataChoosenValidator]);
+    this.dateCtrl = fb.control('', [Validators.required, this.dataCtrlHasSpaces]);
     this.registrationDataForm = fb.group({
-        addressCtrl: fb.control('', [Validators.required]),
-        dateCtrl: fb.control('', [Validators.required]),
+        address: this.addressCtrl,
+        date: this.dateCtrl
       }
     );
   }
@@ -64,17 +68,16 @@ export class AppComponent implements OnInit {
   }
 
   private dadataNotChoosen(): boolean {
-    return this.filteredAddresses.length !== 1;
+    return this.filteredAddresses.length === 1;
   }
 
-  private dadataChoosenValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } => {
-      if (!(control.dirty || control.touched)) {
-        return null;
-      } else {
-        return this.dadataNotChoosen() ? null : {phoneNumber: true};
-      }
-    };
+  private dadataChoosenValidator = () => {
+    return this.dadataNotChoosen() ? null : {notComplete: true};
+  }
+
+  private dataCtrlHasSpaces = (control: FormControl) => {
+    console.log(control);
+    return (!control.value.toString().includes('_')) ? null : {notComplete: true};
   }
 
 }
