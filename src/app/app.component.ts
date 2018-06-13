@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {HttpClientService} from './http-client.service';
 
@@ -43,6 +43,7 @@ export class AppComponent implements OnInit {
     this.saveData(this.registrationDataForm);
     this.getImageFromService();
     setTimeout(() => {
+        this.filteredAddresses = [''];
         this.registrationDataForm.reset();
       },
       100);
@@ -76,7 +77,6 @@ export class AppComponent implements OnInit {
   }
 
   private dataCtrlHasSpaces = (control: FormControl) => {
-    console.log(control);
     return (!control.value.toString().includes('_')) ? null : {notComplete: true};
   }
 
