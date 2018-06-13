@@ -1,6 +1,8 @@
-import {Component, EventEmitter, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {HttpClientService} from './http-client.service';
+import {DadataData} from './domain/dadata-data';
+import {PassportRegistrationResult} from './domain/passport-registration-result';
 
 
 @Component({
@@ -19,6 +21,7 @@ export class AppComponent implements OnInit {
 
   filteredAddresses = [''];
   private imageName: string;
+  private dadataResponse: DadataData[];
 
   constructor(
     private fb: FormBuilder,
@@ -36,17 +39,16 @@ export class AppComponent implements OnInit {
   search(event) {
     this.httpClientService.getAddressSuggestions(event.query).subscribe(data => {
       this.filteredAddresses = data.suggestions.map(suggestion => suggestion.value);
+      this.dadataResponse = data.suggestions.map(suggestion => suggestion.data);
     });
   }
 
   register() {
     this.saveData(this.registrationDataForm);
     this.getImageFromService();
-    setTimeout(() => {
-        this.filteredAddresses = [''];
-        this.registrationDataForm.reset();
-      },
-      100);
+    this.filteredAddresses = [''];
+    this.addressCtrl.setValue('');
+    this.dateCtrl.setValue('');
   }
 
   isInvalid(): boolean {
@@ -61,7 +63,12 @@ export class AppComponent implements OnInit {
   }
 
   saveData(formGroup: FormGroup) {
-    this.httpClientService.saveData(formGroup, this.imageName);
+    const passportRegistrationResult = new PassportRegistrationResult(
+      formGroup.value.date,
+      formGroup.value.address,
+      this.dadataResponse[0] );
+    console.log(passportRegistrationResult);
+    this.httpClientService.saveData(passportRegistrationResult, this.imageName);
   }
 
   ngOnInit(): void {

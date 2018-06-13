@@ -1,7 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {FormGroup} from '@angular/forms';
+import {AddressResponse} from './domain/address-response';
+import {PassportRegistrationResult} from './domain/passport-registration-result';
+import {ImageLinkResponse} from './domain/image-link-response';
 
 
 @Injectable()
@@ -39,9 +41,10 @@ export class HttpClientService {
     return this.http.post<AddressResponse>(this.dadataAddressServiceUrl, data, this.dadataHttpOptions);
   }
 
-  saveData(formData: FormGroup, imageSrc: String) {
-
-    this.http.post<any>(this.sendResultUrl + imageSrc, formData.value, this.resultHttpOptions)
+  saveData(passportRegistrationResult: PassportRegistrationResult, imageSrc: String) {
+    console.log('This is what we send on back: ');
+    console.log(JSON.stringify(passportRegistrationResult));
+    this.http.post<any>(this.sendResultUrl + imageSrc, passportRegistrationResult, this.resultHttpOptions)
       .subscribe(d => console.log(d));
   }
 

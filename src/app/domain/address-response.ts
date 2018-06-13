@@ -1,5 +1,8 @@
-class AddressResponse {
+import {Suggestion} from './suggestion';
+
+export class AddressResponse {
   constructor(
-   public suggestions: Suggestion[]
-  ) {}
+    public suggestions: Suggestion[]
+  ) {
+  }
 }
